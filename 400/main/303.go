@@ -8,7 +8,7 @@ type NumArray struct {
 	PreSum []int
 }
 
-func Constructor(nums []int) NumArray {
+func Constructor2(nums []int) NumArray {
 	preLen := len(nums) + 1
 	preSum := make([]int, preLen)
 
@@ -34,7 +34,7 @@ func (this *NumArray) SumRange(left int, right int) int {
 func main() {
 	numbers := []int{-2, 0, 3, -5, 2, -1}
 
-	numArray := Constructor(numbers)
+	numArray := Constructor2(numbers)
 
 	result := numArray.SumRange(0, 3)
 
