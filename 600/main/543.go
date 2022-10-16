@@ -12,7 +12,7 @@ var maxDeep int
 
 func diameterOfBinaryTree(root *TreeNode) int {
 	maxDeep = 0
-	traverse(root)
+	getMaxDeep(root)
 	return maxDeep
 }
 
@@ -23,26 +23,22 @@ func getMaxDeep(root *TreeNode) int {
 	if root.Left == nil && root.Right == nil {
 		return 1
 	}
-	left := getMaxDeep(root.Left)
-	right := getMaxDeep(root.Right)
+	left := 0
+	if root.Left != nil {
+		left = getMaxDeep(root.Left)
+	}
+	right := 0
+	if root.Right != nil {
+		right = getMaxDeep(root.Right)
+	}
+	deep := left + right
+	if maxDeep < deep {
+		maxDeep = deep
+	}
 
 	if left > right {
 		return 1 + left
 	} else {
 		return 1 + right
 	}
-}
-
-func traverse(root *TreeNode) {
-	if root == nil {
-		return
-	}
-	left := getMaxDeep(root.Left)
-	right := getMaxDeep(root.Right)
-	deep := left + right
-	if maxDeep < deep {
-		maxDeep = deep
-	}
-	traverse(root.Left)
-	traverse(root.Right)
 }
