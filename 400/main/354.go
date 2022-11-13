@@ -10,52 +10,38 @@ import (
 
 func maxEnvelopes(envelopes [][]int) int {
 	//排序
-	sort.SliceStable(envelopes, func(i, j int) bool {
+	sort.Slice(envelopes, func(i, j int) bool {
 		if envelopes[i][0] == envelopes[j][0] {
 			return envelopes[i][1] > envelopes[j][1]
 		}
 		return envelopes[i][0] < envelopes[j][0]
 	})
-	//dp
-	//dpList := make([]int, n)
-	//maxNum := 1
-	//dpList[0] = 1
-	//for i := 1; i < n; i++ {
-	//	dpList[i] = 1
-	//	for j := 0; j < i; j++ {
-	//		if envelopes[j][1] < envelopes[i][1] {
-	//			dpList[i] = max(dpList[j]+1, dpList[i])
-	//
-	//		}
-	//	}
-	//	maxNum = max(maxNum, dpList[i])
-	//}
 
 	//二分
-	minHeight := []int{0}
-	for _, envelope := range envelopes {
-		// 寻找 minHeight 中第一个大于等于 envelope[1] 的下标 k ，
-		// 则说明以当前信封为最外层时，最多能嵌套 k 层
-		k := sort.Search(len(minHeight), func(i int) bool { return minHeight[i] >= envelope[1] })
-		if len(minHeight) == k {
-			// 当前信封是第一个嵌套 k 层的信封，所以直接放入 minHeight
-			minHeight = append(minHeight, envelope[1])
+	dp := []int{envelopes[0][1]}
+	for i := 1; i < len(envelopes); i++ {
+		j := len(dp) - 1
+		if dp[j] < envelopes[i][1] {
+			dp = append(dp, envelopes[i][1])
 		} else {
-			// 此时存在嵌套 k 个信封的情况，
-			// 因为前面二分寻找的是第一个大于等于 envelope[1] 的下标，
-			// 所以 minHeight[k] >= envelope[1] ，可以直接更新为 envelope[1]
-			minHeight[k] = envelope[1]
+			in := lowerBound(dp, envelopes[i][1])
+			dp[in] = envelopes[i][1]
 		}
 	}
-
-	return len(minHeight) - 1
+	return len(dp)
 }
 
-func max(a int, b int) int {
-	if a > b {
-		return a
+func lowerBound(dp []int, target int) int {
+	i, j := 0, len(dp)-1
+	for i < j {
+		mid := i + (j-i)/2
+		if dp[mid] < target {
+			i = mid + 1
+		} else {
+			j = mid
+		}
 	}
-	return b
+	return i
 }
 
 func main() {
