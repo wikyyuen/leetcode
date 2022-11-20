@@ -9,13 +9,17 @@ import (
 var gBase = 1337
 
 func myPow(a int, k int) int {
-	a %= gBase
-	res := 1
-	for i := 0; i < k; i++ {
-		res *= a
-		res %= gBase
+	if k == 0 {
+		return 1
 	}
-	return res
+	a %= gBase
+
+	if k%2 == 1 {
+		return (a * myPow(a, k-1)) % gBase
+	} else {
+		sub := myPow(a, k/2)
+		return (sub * sub) % gBase
+	}
 }
 
 func superPow(a int, b []int) int {
