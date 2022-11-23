@@ -5,43 +5,32 @@ import "fmt"
 //64. Minimum Path Sum
 //64. 最小路径和
 
-var dpList [][]int
-var m, n int
-
 func minPathSum(grid [][]int) int {
-	n = len(grid)
-	m = len(grid[0])
-	dpList = make([][]int, n)
+	n := len(grid)
+	m := len(grid[0])
+	dpList := make([][]int, n)
 	for i := 0; i < n; i++ {
 		dpList[i] = make([]int, m)
-		for j := 0; j < m; j++ {
-			dpList[i][j] = -1
+	}
+	dpList[0][0] = grid[0][0]
+	for i := 1; i < m; i++ {
+		dpList[0][i] = dpList[0][i-1] + grid[0][i]
+	}
+	for i := 1; i < n; i++ {
+		dpList[i][0] = dpList[i-1][0] + grid[i][0]
+	}
+	min := func(a int, b int) int {
+		if a > b {
+			return b
+		}
+		return a
+	}
+	for i := 1; i < n; i++ {
+		for j := 1; j < m; j++ {
+			dpList[i][j] = min(dpList[i-1][j], dpList[i][j-1]) + grid[i][j]
 		}
 	}
-	dpList[n-1][m-1] = grid[n-1][m-1]
-	return dp5(grid, 0, 0)
-}
-
-func dp5(grid [][]int, x int, y int) int {
-	if dpList[y][x] != -1 {
-		return dpList[y][x]
-	}
-	min := 999999
-	if x < m-1 {
-		temp1 := dp5(grid, x+1, y)
-		if min > temp1 {
-			min = temp1
-		}
-	}
-	if y < n-1 {
-		temp2 := dp5(grid, x, y+1)
-		if min > temp2 {
-			min = temp2
-		}
-	}
-
-	dpList[y][x] = grid[y][x] + min
-	return dpList[y][x]
+	return dpList[n-1][m-1]
 }
 
 func main() {
