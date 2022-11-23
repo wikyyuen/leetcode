@@ -7,48 +7,27 @@ import (
 //787. Cheapest Flights Within K Stops
 //787. K 站中转内最便宜的航班
 
-var dpList [][]int
-
 func findCheapestPrice(n int, flights [][]int, src int, dst int, k int) int {
-	flightsGraph := make([][][]int, n)
-	for i := 0; i < len(flights); i++ {
-		flightsGraph[flights[i][0]] = append(flightsGraph[flights[i][0]], []int{flights[i][1], flights[i][2]})
+	minDst := make([]int, n)
+	for i := 0; i < n; i++ {
+		minDst[i] = 999999
 	}
-	dpList = make([][]int, len(flightsGraph))
-	for i := 0; i < len(flightsGraph); i++ {
-		dpList[i] = make([]int, k+1)
+	minDst[src] = 0
+	for i := 0; i < k+1; i++ {
+		temp := make([]int, n)
+		copy(temp, minDst)
+		for _, flight := range flights {
+			s, d, l := flight[0], flight[1], flight[2]
+			if minDst[s] != 999999 && minDst[s]+l < temp[d] {
+				temp[d] = minDst[s] + l
+			}
+		}
+		copy(minDst, temp)
 	}
-	return dp(flightsGraph, src, dst, k)
-}
-
-func dp(flightsGraph [][][]int, src int, dst int, k int) int {
-	if k == -1 {
+	if minDst[dst] == 999999 {
 		return -1
 	}
-	if dpList[src][k] != 0 {
-		return dpList[src][k]
-	}
-	max := 9999999
-	for i := 0; i < len(flightsGraph[src]); i++ {
-		var temp int
-		if flightsGraph[src][i][0] == dst {
-			temp = 0
-		} else {
-			temp = dp(flightsGraph, flightsGraph[src][i][0], dst, k-1)
-		}
-		if temp == -1 {
-			continue
-		}
-		temp += flightsGraph[src][i][1]
-		if temp < max {
-			max = temp
-		}
-	}
-	if max == 9999999 {
-		max = -1
-	}
-	dpList[src][k] = max
-	return max
+	return minDst[dst]
 }
 
 func main() {
