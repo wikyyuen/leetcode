@@ -2,20 +2,22 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 )
 
 //787. Cheapest Flights Within K Stops
 //787. K 站中转内最便宜的航班
 
-var dpList map[string]int
+var dpList [][]int
 
 func findCheapestPrice(n int, flights [][]int, src int, dst int, k int) int {
 	flightsGraph := make([][][]int, n)
 	for i := 0; i < len(flights); i++ {
 		flightsGraph[flights[i][0]] = append(flightsGraph[flights[i][0]], []int{flights[i][1], flights[i][2]})
 	}
-	dpList = make(map[string]int)
+	dpList = make([][]int, len(flightsGraph))
+	for i := 0; i < len(flightsGraph); i++ {
+		dpList[i] = make([]int, k+1)
+	}
 	return dp(flightsGraph, src, dst, k)
 }
 
@@ -23,8 +25,8 @@ func dp(flightsGraph [][][]int, src int, dst int, k int) int {
 	if k == -1 {
 		return -1
 	}
-	if value, ok := dpList[strconv.Itoa(src)+","+strconv.Itoa(k)]; ok {
-		return value
+	if dpList[src][k] != 0 {
+		return dpList[src][k]
 	}
 	max := 9999999
 	for i := 0; i < len(flightsGraph[src]); i++ {
@@ -45,7 +47,7 @@ func dp(flightsGraph [][][]int, src int, dst int, k int) int {
 	if max == 9999999 {
 		max = -1
 	}
-	dpList[strconv.Itoa(src)+","+strconv.Itoa(k)] = max
+	dpList[src][k] = max
 	return max
 }
 
