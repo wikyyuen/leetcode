@@ -5,38 +5,20 @@ import "fmt"
 //45. Jump Game II
 //45. 跳跃游戏 II
 
-var gNums []int
-var dpList []int
-
 func jump(nums []int) int {
-	if len(nums) <= 1 {
-		return 0
-	}
-	gNums = nums
-	dpList = make([]int, len(nums))
-	return dp(0)
-}
-
-func dp(index int) int {
-	if gNums[index] == 0 {
-		return len(gNums)
-	}
-	if gNums[index]+index >= len(gNums)-1 {
-		return 1
-	}
-
-	if dpList[index] != 0 {
-		return dpList[index]
-	}
-	min := len(gNums)
-	for i := index + 1; i <= gNums[index]+index; i++ {
-		temp := dp(i)
-		if min > temp {
-			min = temp
+	//贪心
+	j, e, s := 0, 0, 0
+	for e < len(nums)-1 {
+		j++
+		farthest := e
+		for i := s; i <= e; i++ {
+			if farthest < i+nums[i] {
+				farthest = i + nums[i]
+			}
 		}
+		s, e = e+1, farthest
 	}
-	dpList[index] = min + 1
-	return dpList[index]
+	return j
 }
 
 func main() {
