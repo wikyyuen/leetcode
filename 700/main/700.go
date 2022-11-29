@@ -10,15 +10,15 @@ type TreeNode struct {
 }
 
 func searchBST(root *TreeNode, val int) *TreeNode {
-	if root == nil {
-		return nil
+	for root != nil {
+		if root.Val == val {
+			return root
+		}
+		if root.Val < val {
+			root = root.Right
+		} else {
+			root = root.Left
+		}
 	}
-	if root.Val == val {
-		return root
-	}
-	if root.Val > val {
-		return searchBST(root.Left, val)
-	} else {
-		return searchBST(root.Right, val)
-	}
+	return nil
 }
